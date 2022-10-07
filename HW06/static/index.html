@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="/static/hw6style.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/script.js"></script>
+</head>
+<body>
+<div style="position: relative; margin-top: 10px">
+    <div class="search_area">
+        <div class="search_header">
+            <p style="padding:40px 0 0 50px;margin: 0 0 14px 0; font-weight: bold;
+             font-size: 30px; font-family: Helvetica Neue, sans-serif">Business Search <br/> </p>
+            <span style="padding-left:50px; font-size: 26px; font-family: Helvetica Neue, sans-serif">Fill out the form to get businesses near you!</span>
+        </div>
+        <form class="search_form" action="" onsubmit="return false">
+            <table>
+                <tr>
+                    <td style="text-align: left;padding:10px 0 0 50px;" colspan="2">
+                        <label for="name">Keyword<span>*</span></label><br/>
+                        <input class="search_text" type="text" value="" id="KeyWord" autocomplete="off" required/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;padding:10px 0 0 50px;width: 50%">
+                        <label for="name">Distance(miles)</label><br/>
+                        <input class="search_text" type="number" style="width: 60%"
+                               value="" id="Distance" autocomplete="off" />
+                    </td>
+                    <td style="text-align: left;padding:10px 50px 0 0;">
+                        <label for="name">Category<span>*</span><br/>
+                            <select class="search_text" id="Category" autocomplete="off" required>
+                                <option value="1">Default</option>
+                                <option value="2">Arts & Entertainment</option>
+                                <option value="3">Health & Medical</option>
+                                <option value="4">Hotels & Travel</option>
+                                <option value="5">Food</option>
+                                <option value="6">Professional Services</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;padding:10px 0 0 50px" colspan="2">
+                        <label for="name">Location<span>*</span></label><br/>
+                        <input class="search_text" type="text" value="" id="Location" autocomplete="on" required/>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="line"></div>
+            <div style="padding-bottom: 30px">
+                <span style="color: midnightblue; padding: 0 0 0 50px; font-family: 'Roboto', sans-serif; font-size: 20px;">
+                    Want us to auto-detect your location? Check here
+                </span>
+                <input id = "autoGeoDetectBox" type="checkbox" name="autoDetectGeo" value="checkGeo" onclick="auto_detect_geo()"/>
+
+            </div>
+            <div>
+                <input class="input_button" type="submit" style="background: #5753C2; margin: 0 0 0 50px;border-bottom: 5px solid #353275"
+                       value="SUBMIT" id="submit_but" onclick="business_search()"/>
+                <input class="input_button" type="reset" style="background: #EBC44C; margin: 0;border-bottom: 5px solid #EBA131" onclick="clearAll()"
+                   value="CLEAR" id="reset_but"/>
+            </div>
+
+        </form>
+        <iframe id="iframeForm" name="iframeForm" style="display:none;"></iframe>
+    </div>
+
+    <div id="search_result">
+        <div class="result_table">
+            <table style="border:1px solid #d9d6d6;">
+                <tr id = "title_row" class = "result_table_row" style="background: rgba(21, 65, 161, 0.59);">
+                    <td class="title_col" style="width: 7%; ">No.</td>
+                    <td class="title_col" style="width: 15%; ">Image</td>
+                    <td class="title_col" style="width: 44%; ">Business Name</td>
+                    <td class="title_col" style="width: 17%; ">Rating</td>
+                    <td class="title_col" style="width: 17%; ">Distance (miles)</td>
+                </tr>
+                <tr id = "content_row_1" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(1)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_2" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(2)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_3" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(3)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_4" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(4)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_5" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(5)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_6" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(6)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_7" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(7)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_8" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(8)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_9" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(9)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_10" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(10)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_11" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(11)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_12" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(12)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_13" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(13)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_14" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(14)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_15" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(15)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_16" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(16)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_17" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(17)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_18" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(18)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_19" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(19)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+                <tr id = "content_row_20" class = "result_table_row">
+                    <td class="content_No" style="width: 7%">
+                        <span></span>
+                    </td>
+                    <td class="content_Image" style="width: 15%; max-width: 15%;">
+                        <img src=""  style = "max-height:120px; max-width: 100%; object-fit: fill"/>
+                    </td>
+                    <td class="content_Business" style="width: 44%">
+                        <span onclick="business_detail(20)"></span>
+                    </td>
+                    <td class="content_Rating" style="width: 17%">
+                        <span></span>
+                    </td>
+                    <td class="content_Distance" style="width: 17%">
+                        <span></span>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div id = "business_detail">
+        <div id="business_name" style="text-align: center; padding-top: 10px">
+            <p class="bname_title" style="margin: 0 0; font-size: 20px; font-weight: bolder; font-family: Arial,serif">Biesta</p>
+        </div>
+        <div class="detail_line"></div>
+        <table id = "detail_table">
+            <tr id = "detail_row_1">
+                <td id = "b_status"  style="width: 50%;  max-width: 380px">
+                    <p class = "detail_title">Status</p>
+                    <p class = "detail_content" style="background: green; border-radius: 3px;
+                    width: 70px; padding-left: 5px; text-align: center;position: relative; left: -37%">Open Now</p>
+                </td>
+                <td id = "b_category"  style="width: 50%; min-width: 380px;max-width: 380px">
+                    <p class = "detail_title">Category</p>
+                    <p class = "detail_content">Coffee</p>
+                </td>
+            </tr>
+            <tr id = "detail_row_2">
+                <td id = "b_address" style="width: 50%; max-width: 380px">
+                    <p class = "detail_title">Address</p>
+                    <p class = "detail_content"></p>
+                </td>
+                <td id = "b_phone"  style="width: 50%; max-width: 380px">
+                    <p class = "detail_title">Phone Number</p>
+                    <p class = "detail_content"></p>
+                </td>
+
+            </tr>
+            <tr id = "detail_row_3">
+                <td id = "b_ts"  style="width: 50%; max-width: 380px">
+                    <p class = "detail_title">Transaction Supported</p>
+                    <p class = "detail_content"></p>
+                </td>
+                <td id = "b_price"  style="width: 50%; max-width: 380px">
+                    <p class = "detail_title">Price</p>
+                    <p class = "detail_content"></p>
+                </td>
+            </tr>
+            <tr id = "detail_row_4">
+                <td id = "b_moreInfo"  style="width: 100%; max-width: 760px">
+                    <p class = "detail_title">More info </p>
+                    <p class = "detail_content"><a href = "">Yelp</a></p>
+                </td>
+            </tr>
+
+        </table>
+        <table id = "row_5_table">
+            <tr id = "detail_row_5" >
+                <td id = "b_img1" >
+                    <p style="position: relative; top: 98%;left: 40%; transform: translate(0, -50%);height: 18px;
+                    font-family: Arial, serif;font-weight: lighter;">Photo 1</p>
+                    <img src="https://s3-media4.fl.yelpcdn.com/bphoto/jCqA8EGlU_dSLj4-Sjs_nQ/o.jpg"/>
+
+                </td>
+                <td id = "b_img2" >
+                    <p style="position: relative; top: 98%; left: 40%; transform: translate(0, -50%);height: 18px;
+                    font-family: Arial, serif;font-weight: lighter ">Photo 2</p>
+                    <img src="https://s3-media3.fl.yelpcdn.com/bphoto/JwETEHR9xexbZvQ4L11H4A/o.jpg" />
+
+                </td>
+                <td id = "b_img3" >
+                    <p style="position: relative; top: 98%; left: 40%; transform: translate(0, -50%); height: 18px;
+                    font-family: Arial, serif;font-weight: lighter ">Photo 3</p>
+                    <img src="https://s3-media2.fl.yelpcdn.com/bphoto/rfvMZ5JxyXHJMMNcNCXqOQ/o.jpg"/>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>
